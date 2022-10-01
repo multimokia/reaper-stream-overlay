@@ -24,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "uvicorn server.main:app --host 0.0.0.0 --port 8000",
+    "host": "npm run serve & npm run start"
   },
   "eslintConfig": {
     "extends": [
