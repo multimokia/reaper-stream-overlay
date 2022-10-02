@@ -1,0 +1,22 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Control</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <button name="Play" value="Play" onclick="$.ajax({url: '/api/reaper/control/play', type: 'POST'})">Play</button>
+
+    <button name="Pause" value="Pause" onclick="$.ajax({url: '/api/reaper/control/pause', type: 'POST'})">Pause</button>
+
+    <button name="Stop" value="Stop" onclick="$.ajax({url: '/api/reaper/control/stop', type: 'POST'})">Stop</button>
+</body>
+
+</html>

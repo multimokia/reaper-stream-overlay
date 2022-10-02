@@ -22,7 +22,6 @@ function App() {
         <div className="App" style={{width: "100vw", height: "100vh"}}>
             <Carousel
                 controls={false}
-                fade={true}
                 interval={10000}
                 indicators={false}
                 style={{

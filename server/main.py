@@ -1,7 +1,12 @@
 from typing import Any
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 import reapy
+
+
+templates = Jinja2Templates(directory="server/templates")
+
 
 app = FastAPI()
 app.add_middleware(
@@ -39,7 +44,7 @@ async def info():
     except Exception:
         reapy.tools.reconnect()
         return {
-            "error": "No project open"
+            "error": "No project open."
         }
 
     return {
@@ -51,3 +56,44 @@ async def info():
         },
         "selected_media_items": convertSelectedItems(CURR_PROJECT.selected_items)
     }
+
+@app.post("/api/reaper/control/play")
+async def play():
+    try:
+        CURR_PROJECT = reapy.Project()
+    except Exception:
+        reapy.tools.reconnect()
+        return {
+            "error": "No project open."
+        }
+
+    CURR_PROJECT.play()
+
+
+@app.post("/api/reaper/control/pause")
+async def pause():
+    try:
+        CURR_PROJECT = reapy.Project()
+    except Exception:
+        reapy.tools.reconnect()
+        return {
+            "error": "No project open."
+        }
+
+    CURR_PROJECT.pause()
+
+@app.post("/api/reaper/control/stop")
+async def stop():
+    try:
+        CURR_PROJECT = reapy.Project()
+    except Exception:
+        reapy.tools.reconnect()
+        return {
+            "error": "No project open."
+        }
+
+    CURR_PROJECT.stop()
+
+@app.get("/")
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
