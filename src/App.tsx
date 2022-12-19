@@ -2,22 +2,33 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Carousel } from 'react-bootstrap';
 import './App.css';
-import { useFetch } from './hooks/useFetch'
-import { ProjectInfo } from './interfaces/projectinfo';
+import { MediaItemInfo } from './interfaces/projectinfo';
 import * as Icon from 'react-bootstrap-icons';
+import { socket } from './hooks/context';
 
 function App() {
-    const { data, refetch } = useFetch<ProjectInfo>("http://localhost:8000/api/reaper/projectinfo");
-    const [refreshInterval, setRefreshInterval] = useState(1000);
+    const [ projectTitle, setProjectTitle ] = useState("No project open.");
+    const [ selectedItemInfo, setSelectedItemInfo ] = useState<MediaItemInfo>();
 
     useEffect(() => {
-        if (refreshInterval && refreshInterval > 0) {
-            const interval = setInterval(refetch, refreshInterval);
-            return () => clearInterval(interval);
-        }
-    });
+        socket.on("project-name-change", (newTitle: string) => {
+            setProjectTitle(newTitle);
+        });
 
-    const [r, g, b] = data.selected_media_items.length === 0 ? [33, 33, 33] : data.selected_media_items[0].track_color;
+        socket.on("project-selection-change", (selecteditem?: MediaItemInfo) => {
+            setSelectedItemInfo(selecteditem);
+            console.log(selecteditem);
+
+            if (window.obsstudio) {
+                window.obsstudio.setCurrentScene(
+                    selecteditem ? "Pianoroll Screen" : "Reaper Timeline"
+                );
+            }
+        });
+    }, []);
+
+    const [r, g, b] = selectedItemInfo === undefined ? [33, 33, 33] : selectedItemInfo.track_color;
+
     return (
         <div className="App" style={{width: "100vw", height: "100vh"}}>
             <Carousel
@@ -36,14 +47,14 @@ function App() {
             >
                 <Carousel.Item
                 >
-                    <h1>{data.project_name === "" ? "No project open" : `Project: ${data.project_name}`}</h1>
+                    <h1>{projectTitle}</h1>
                 </Carousel.Item>
                 <Carousel.Item
                     style={{
                         background: `rgb(${r}, ${g}, ${b})`
                     }}
                 >
-                    <h1>{data.selected_media_items.length === 0 ? "No item selected" : `Editing ${data.selected_media_items[0].track_name} | ${new Date(data.selected_media_items[0].start_time * 1000).toISOString().substring(14, 19)} - ${new Date(data.selected_media_items[0].end_time * 1000).toISOString().substring(14, 19)}`}</h1>
+                    <h1>{selectedItemInfo === undefined ? "No item selected" : `Editing ${selectedItemInfo.track_name} | ${new Date(selectedItemInfo.start_time * 1000).toISOString().substring(14, 19)} - ${new Date(selectedItemInfo.end_time * 1000).toISOString().substring(14, 19)}`}</h1>
                 </Carousel.Item>
                 <Carousel.Item
                 >

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.62",
+    "@types/obs-studio": "^2.17.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "axios": "^0.27.2",
@@ -17,6 +18,7 @@
     "react-bootstrap-icons": "^1.9.1",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "socket.io-client": "^4.5.4",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4"
   },
@@ -25,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "uvicorn server.main:app --host 0.0.0.0 --port 8000",
+    "serve": "python server/main.py",
     "host": "npm run serve & npm run start"
   },
   "eslintConfig": {
