@@ -4,12 +4,20 @@ import eventlet
 from eventlet import wsgi
 from typing import Any, Callable
 import reapy
+from strenum import StrEnum
 
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio)
 
 CURR_PROJECT = reapy.Project()
 OBSERVERS: dict[int, "ObservableFunctionResult"] = dict()
+
+class SocketServerEvents(StrEnum):
+    ProjectNameChange = "project-name-change"
+    ItemSelectionChange = "project-selection-change"
+    MutedChannelsChange = "project-muted-channels-change"
+    SolodChannelsChange = "project-solod-channels-change"
+
 
 class ObservableFunctionResult:
     def __init__(self, func: Callable[[], Any]) -> "ObservableFunctionResult":
@@ -65,6 +73,7 @@ async def checkObservables() -> None:
 
 def fetchProjectName() -> str:
     """
+    Gets project name
     """
     global CURR_PROJECT
     try:
@@ -77,14 +86,16 @@ def fetchProjectName() -> str:
 
 def emitProjectName(oldVal, newVal) -> None:
     """
+    Emits a websocket event for the project name change/set
     """
     if newVal is None:
-        return
+        newVal = "No project open."
 
-    sio.emit("project-name-change", newVal)
+    sio.emit(SocketServerEvents.ProjectNameChange, newVal)
 
 def fetchSelectedItems() -> str:
     """
+    Gets the selected items in the project
     """
     global CURR_PROJECT
     try:
@@ -108,9 +119,64 @@ def fetchSelectedItems() -> str:
 
 def emitSelectedItems(oldVal, newVal) -> None:
     """
+    Emits a websocket event for selection change
     """
-    sio.emit("project-selection-change", newVal)
+    sio.emit(SocketServerEvents.ItemSelectionChange, newVal)
 
+def fetchMutedChannels():
+    """
+    Fetches all muted channels in the project
+    """
+    global CURR_PROJECT
+    try:
+        CURR_PROJECT = reapy.Project()
+
+        if not CURR_PROJECT:
+            return []
+
+        return [
+            { "track_name": track.name, "track_color": track.color }
+            for track in filter(lambda x: x.is_muted, CURR_PROJECT.tracks)
+        ]
+
+    except Exception:
+        reapy.tools.reconnect()
+        return []
+
+def emitMutedChannels(oldVal, newVal) -> None:
+    """
+    Emits a websocket event for muted channels change
+    """
+    sio.emit(SocketServerEvents.MutedChannelsChange, newVal)
+
+def fetchSolodChannels():
+    """
+    Fetches all Solo'd channels in the project
+    """
+    global CURR_PROJECT
+    try:
+        CURR_PROJECT = reapy.Project()
+
+        if not CURR_PROJECT:
+            return []
+
+        return [
+            { "track_name": track.name, "track_color": track.color }
+            for track in filter(lambda x: x.is_solo, CURR_PROJECT.tracks)
+        ]
+
+    except Exception:
+        reapy.tools.reconnect()
+        return []
+
+def emitSolodChannels(oldVal, newVal) -> None:
+    """
+    Emits a websocket event for Solo'd channels change
+    """
+    sio.emit(SocketServerEvents.SolodChannelsChange, newVal)
+
+
+### Loop related
 def loopThread():
     # Prep loop
     loop = asyncio.new_event_loop()
@@ -119,13 +185,15 @@ def loopThread():
 
 @sio.event
 def connect(sid, environ):
-    sio.emit("project-name-change", CURR_PROJECT.name.replace(".rpp", ""))
+    sio.emit(SocketServerEvents.ProjectNameChange, CURR_PROJECT.name.replace(".rpp", ""))
     return
 
 def main():
     # Init handlers
     ObservableFunctionResult(fetchProjectName).subscribe(emitProjectName)
     ObservableFunctionResult(fetchSelectedItems).subscribe(emitSelectedItems)
+    ObservableFunctionResult(fetchMutedChannels).subscribe(emitMutedChannels)
+    ObservableFunctionResult(fetchSolodChannels).subscribe(emitSolodChannels)
 
     eventlet.monkey_patch()
     sio.start_background_task(target=loopThread)

@@ -9,3 +9,8 @@ export type MediaItemInfo = {
     start_time: number,
     end_time: number
 }
+
+export type ShortTrackInfo = {
+    track_name: string
+    track_color: number[]
+}
