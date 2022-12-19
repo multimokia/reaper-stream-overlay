@@ -1,6 +1,6 @@
 # REAPER Stream Overlay
 A stream overlay (currently just a bar) built for streaming the [REAPER](https://reaper.fm) application.
-The overlay can reflect project data as sent by the FastAPI server in `./server/main.py` which can then be used on the webpage
+The overlay can reflect project data as sent by the websocket eventlet server in `./server/main.py` which can then be used on the webpage
 
 To stream, simply add `http://localhost:3000` as a browser source.
 
@@ -45,8 +45,8 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ***Note: this relies on external python3 libs, listed below:***
 - python-reapy
-- FastAPI
-- uvicorn[standard]
+- eventlet
+- socketio
 
 And finally, python 3 configured in REAPER
 
