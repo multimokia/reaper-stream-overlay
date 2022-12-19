@@ -69,7 +69,7 @@ async def checkObservables() -> None:
         for observable in OBSERVERS.values():
             observable.checkHandlers()
 
-        sio.sleep(0.5)
+        sio.sleep(0.1)
 
 def fetchProjectName() -> str:
     """

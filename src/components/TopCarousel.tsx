@@ -13,27 +13,20 @@ export const TopBanner: React.FC<{selectedItemInfo: MediaItemInfo | undefined, p
             indicators={false}
             style={{
                 background: "#343434",
-                height: 50,
+                height: "7%",
                 bottom: "0px",
                 color: "white",
                 fontFamily: "Poppins",
-                fontWeight: "bolder"
+                fontWeight: "bolder",
             }}
         >
-            <Carousel.Item
-            >
-                <h1>{projectTitle}</h1>
-            </Carousel.Item>
-            <Carousel.Item
-                style={{
-                    background: `rgb(${r}, ${g}, ${b})`
-                }}
-            >
+            <Carousel.Item><h1>{projectTitle}</h1></Carousel.Item>
+            <Carousel.Item style={{background: `rgb(${r}, ${g}, ${b})`}}>
                 <h1>{selectedItemInfo === undefined ? "No item selected" : `Editing ${selectedItemInfo.track_name} | ${new Date(selectedItemInfo.start_time * 1000).toISOString().substring(14, 19)} - ${new Date(selectedItemInfo.end_time * 1000).toISOString().substring(14, 19)}`}</h1>
             </Carousel.Item>
-            <Carousel.Item
-            >
-                <h1><table width={"100%"}><td><Icon.Twitter/> @multimokia</td><td><Icon.Youtube/> Subscribe!</td></table></h1>
+            <Carousel.Item>
+                <h1 style={{alignSelf: "center", flexGrow: 1, marginBottom: 0}}><Icon.Twitter style={{marginBottom: "5px"}}/> @multimokia</h1>
+                <h1 style={{alignSelf: "center", flexGrow: 1, marginBottom: 0}}><Icon.Youtube style={{marginBottom: "5px"}}/> Subscribe!</h1>
             </Carousel.Item>
         </Carousel>
     )
