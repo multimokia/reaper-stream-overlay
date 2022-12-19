@@ -1,6 +1,6 @@
 # REAPER Stream Overlay
-A stream overlay (currently just a bar) built for streaming the [REAPER](https://reaper.fm) application.
-The overlay can reflect project data as sent by the websocket eventlet server in `./server/main.py` which can then be used on the webpage
+A stream overlay built for streaming the [REAPER](https://reaper.fm) application.
+The overlay can reflect project data as sent by the websocket eventlet server in `./server/main.py` over port 5000 **locally**. Which can then be used on the webpage.
 
 To stream, simply add `http://localhost:3000` as a browser source.
 
@@ -50,7 +50,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 And finally, python 3 configured in REAPER
 
-This command will run the uvicorn server which will interface with REAPER to fetch project info from.
+This command will run the eventlet websocket server which will fire events when changes in REAPER are detected, sending the new information from the project over the connection.
 After running this command, you'll want to `npm run start` to begin reflecting project info to the overlay
 
 ## Learn More

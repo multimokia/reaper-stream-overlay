@@ -2,18 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { MediaItemInfo, ShortTrackInfo } from './interfaces/projectinfo';
 import { socket } from './hooks/context';
-import { TrackList } from './components/Tracklist';
 import { TopBanner } from './components/TopCarousel';
 import { MutedSoloTracklist } from './components/MutedSoloTracklist';
-
-const MUTED_TRACKS: ShortTrackInfo[] = [
-    { track_name: "SSW Oboes", track_color: [ 24, 24, 25]},
-    { track_name: "Jaeger Trumpets", track_color: [ 65, 65, 67 ]}
-];
-
-const SOLOD_TRACKS: ShortTrackInfo[] = [
-    { track_name: "AL Euphs", track_color: [ 65, 87, 24 ]}
-];
 
 function App() {
     const [ projectTitle, setProjectTitle ] = useState("No project open.");
