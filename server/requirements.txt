@@ -1,0 +1,4 @@
+python-socketio
+python-reapy
+eventlet
+strenum
